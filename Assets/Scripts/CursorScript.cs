@@ -5,27 +5,35 @@ using UnityEngine;
 
 public class CursorScript : MonoBehaviour {
 
+    // Variables
     private Vector3 mousePos;
     private Vector3 newMousePos;
+    // Object reference to the Rigidbody2D of this cursor
     private Rigidbody2D rb2d;
-
+    // Object reference to the MoveManager script
     [SerializeField]
     private MoveManager moveManager;
 
+    // Start
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
     }
     
+    // FixedUpdate
     void FixedUpdate()
     {
+        // Moves the cursor
         MoveCursor();
 
+        // If the user clicks
         if (Input.GetMouseButtonDown(0))
         {
+            // If the user clicked on a unit
             if (SelectUnit())
             {
-                moveManager.AttemptMove();
+                // Call the InitiateMove-method in MoveManager
+                moveManager.InitiateMove();
             }
         }            
     }
@@ -40,26 +48,20 @@ public class CursorScript : MonoBehaviour {
         rb2d.MovePosition(new Vector2(Mathf.Floor(newMousePos.x), Mathf.Floor(newMousePos.y)));
     }
 
-    private void MoveUnit()
-    {
-        /*if (moveManager.okCollision && Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Hej");
-        }
-        */
-    }
-
+    // Does a raycast to see if the user clicked on a unit
     private bool SelectUnit()
     {
         RaycastHit2D hit = Physics2D.Raycast(newMousePos, Vector2.zero);
 
         if (hit.transform.CompareTag("Player"))
         {
+            // Set the selectedUnit object in MoveManager to the unit hit by the raycast
             moveManager.selectedUnit = hit.transform.gameObject;
 
             return true;
         }
 
+        // If the raycast didn't hit anything: return false
         else return false;
     }
 }

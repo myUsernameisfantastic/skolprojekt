@@ -2,32 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Parent class of all terrain types
 public class TerrainScript : MonoBehaviour {
 
-    private int xPos;
-    private int yPos;
-    private int weight;
-    //public bool occupied;
+    // Bool used to check if the tile is occupied by a unit
+    public bool occupied;
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // If a unit enters a tile, set occupied to true
         if (collision.CompareTag("Player"))
         {
-        }
-
-        if (collision.CompareTag("Cursor"))
-        {
+            occupied = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        // If a unit exits the tile, set occupied to false
         if (collision.CompareTag("Player"))
         {
+            occupied = false;
         }
-    }
-
-    public void IsItOccupied()
-    {
     }
 }

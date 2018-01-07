@@ -223,7 +223,6 @@
     <Compile Include="Assets\Scripts\MapManager.cs" />
     <Compile Include="Assets\Scripts\MoveManager.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\ForestScript.cs" />
-    <Compile Include="Assets\Scripts\Terrain Scripts\ITerrain.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\MountainScript.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\PlainsScript.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\TerrainScript.cs" />

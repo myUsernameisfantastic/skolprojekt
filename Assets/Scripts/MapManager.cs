@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class MapManager : MonoBehaviour {
 
-    // struct that holds an object reference to a tile on the map, its position and its weight
+    // struct that holds an object reference to a tile on the map, its position and its weight (and also which terrain-type it is)
     public struct MapTiles
     {
         public GameObject tile;
+        public Component terrainType;
         public int x, y;
         public int weight;
 
@@ -15,21 +16,35 @@ public class MapManager : MonoBehaviour {
         {
             this.tile = tile;
 
-            this.x = (int)tile.transform.position.x;
-            this.y = (int)tile.transform.position.y;
+            x = (int)tile.transform.position.x;
+            y = (int)tile.transform.position.y;
 
-            // Checks if the tile is a plainsTile, forestTile or mountainTile and sets  this weight to corresponding weight
-            // Defaults to 1
+            // Checks if the tile is a plainsTile, forestTile or mountainTile and sets the weight-variable accordingly
+            // Also sets the corresponding terrainType
+            // Defaults to 1 and plains-tile
             if (tile.GetComponent<PlainsScript>() != null)
+            {
+                terrainType = tile.GetComponent<PlainsScript>();
                 weight = tile.GetComponent<PlainsScript>().weight;
+            }
 
             else if (tile.GetComponent<ForestScript>() != null)
+            {
+                terrainType = tile.GetComponent<ForestScript>();
                 weight = tile.GetComponent<ForestScript>().weight;
+            }
 
             else if (tile.GetComponent<MountainScript>() != null)
+            {
+                terrainType = tile.GetComponent<MountainScript>();
                 weight = tile.GetComponent<MountainScript>().weight;
+            }
 
-            else weight = 1;
+            else
+            {
+                terrainType = tile.GetComponent<PlainsScript>();
+                weight = 1;
+            }
         }
     }
 
@@ -37,6 +52,9 @@ public class MapManager : MonoBehaviour {
     // (is parent of [the tiles])
     private Transform map;
 
+    // This is used instead of the struct
+    // If you would want to do that, for whatever reason
+    // maybe its easier on the memory i dont know im not an expert 
     /*****************************************************************************************************
     // Array of the tiles making the map
     public GameObject[,] mapTiles = new GameObject[5, 5];
@@ -54,6 +72,7 @@ public class MapManager : MonoBehaviour {
     [SerializeField]
     private GameObject[] tilePrefabs = new GameObject[3];
 
+    // Awake
     void Awake()
     {
         map = GetComponent<Transform>();
@@ -61,11 +80,11 @@ public class MapManager : MonoBehaviour {
         CreateMap();
     }
 
-
     // Creates the map
     private void CreateMap()
     {
         // Places plainsTile:s within an area defined by the lengths of the for-loops
+        // i.e. the lengths of the for-loops define the size of the map
         for (int y = 0; y < 5; y++)
         {
             for (int x = 0; x < 5; x++)
@@ -79,6 +98,7 @@ public class MapManager : MonoBehaviour {
         LayTile(tilePrefabs[2], new Vector3(2f, 2f, 0f), 10);
     }
 
+    // Used if the struct is not used
     /****************************************************************************************************
     // Instantiates a given tile at a given position
     private void LayTile(GameObject prefab, Vector3 position, int weight)
@@ -99,8 +119,6 @@ public class MapManager : MonoBehaviour {
         weightedMap[(int)position.x, (int)position.y] = RecordWeight(instance);
         Debug.Log(RecordWeight(instance).ToString());
     }****************************************************************************************************/
-
-
     
     // Instantiates a given tile at a given position
     private void LayTile(GameObject prefab, Vector3 position, int weight)
@@ -117,7 +135,9 @@ public class MapManager : MonoBehaviour {
     }
 
 
+    // Used if the struct is not used
     // Returns the weight value of the tile
+    /******************************************************************************************************
     private int RecordWeight(GameObject tile)
     {
         // Checks if the tile is a plainsTile, forestTile or mountainTile and returns corresponding weight
@@ -132,5 +152,5 @@ public class MapManager : MonoBehaviour {
             return tile.GetComponent<MountainScript>().weight;
 
         else return 1;
-    }
+    }***********************************************************************************************************/
 }
