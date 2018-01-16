@@ -220,12 +220,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\CursorScript.cs" />
+    <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\MapManager.cs" />
     <Compile Include="Assets\Scripts\MoveManager.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\ForestScript.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\MountainScript.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\PlainsScript.cs" />
     <Compile Include="Assets\Scripts\Terrain Scripts\TerrainScript.cs" />
+    <Compile Include="Assets\Scripts\TurnManager.cs" />
     <Compile Include="Assets\Scripts\UnitScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

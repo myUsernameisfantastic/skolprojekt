@@ -7,11 +7,11 @@ public class TerrainScript : MonoBehaviour {
 
     // Bool used to check if the tile is occupied by a unit
     public bool occupied;
-    
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // If a unit enters a tile, set occupied to true
-        if (collision.CompareTag("Player"))
+        if (collision.GetComponent<UnitScript>() != null)
         {
             occupied = true;
         }
@@ -20,7 +20,7 @@ public class TerrainScript : MonoBehaviour {
     private void OnTriggerExit2D(Collider2D collision)
     {
         // If a unit exits the tile, set occupied to false
-        if (collision.CompareTag("Player"))
+        if (collision.GetComponent<UnitScript>() != null)
         {
             occupied = false;
         }

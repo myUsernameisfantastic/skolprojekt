@@ -21,6 +21,7 @@ public class CursorScript : MonoBehaviour {
     }
     
     // FixedUpdate
+    //                                                                          should be changed to update when turn have been implemented, i think
     void FixedUpdate()
     {
         // Moves the cursor
@@ -53,7 +54,7 @@ public class CursorScript : MonoBehaviour {
     {
         RaycastHit2D hit = Physics2D.Raycast(newMousePos, Vector2.zero);
 
-        if (hit.transform.CompareTag("Player"))
+        if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Enemy"))
         {
             // Set the selectedUnit object in MoveManager to the unit hit by the raycast
             moveManager.selectedUnit = hit.transform.gameObject;

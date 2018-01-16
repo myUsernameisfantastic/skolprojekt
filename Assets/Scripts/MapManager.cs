@@ -54,7 +54,7 @@ public class MapManager : MonoBehaviour {
 
     // This is used instead of the struct
     // If you would want to do that, for whatever reason
-    // maybe its easier on the memory i dont know im not an expert 
+    // maybe it's easier on the memory I dont know I'm not an expert 
     /*****************************************************************************************************
     // Array of the tiles making the map
     public GameObject[,] mapTiles = new GameObject[5, 5];

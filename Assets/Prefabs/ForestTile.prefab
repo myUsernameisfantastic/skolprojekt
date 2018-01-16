@@ -78,10 +78,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8e7057d45b9aee4eb6677dbbdc0ea65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weight: 0
-  xPos: 0
-  yPos: 0
+  tooltipManager: {fileID: 0}
   occupied: 0
+  weight: 0
 --- !u!212 &212093080890004436
 SpriteRenderer:
   m_ObjectHideFlags: 1

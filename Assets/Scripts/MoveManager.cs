@@ -41,13 +41,15 @@ public class MoveManager : MonoBehaviour {
         // If a unit is in the process of moving and the user clicks
         if (moveInMotion && Input.GetMouseButtonDown(0))
         {
-            // Set moveInMotion to false. Whether or not the unit actually moves does not matter
+            // Set moveInMotion to false because the process of moving either succeeded or failed
             moveInMotion = false;
             // Was manually set to false in InitiateMove()
             // Is manually set to true in case the unit doesn't move
-            // (If the unit moves it will be set to false by OnTriggerExit2D)
-            mapManager.mapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].tile.GetComponent<TerrainScript>().occupied = true;           
-            AttemptMove();
+            // (If the unit moves it will be set to false by the OnTriggerExit2D on the tile object)
+            mapManager.mapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].tile.GetComponent<TerrainScript>().occupied = true;  
+            // If the selected unit is a player and that player hasn't already moved: allow for an attempt to move
+            if (selectedUnit.CompareTag("Player") && selectedUnit.GetComponent<UnitScript>().canTakeAction)
+                AttemptMove();
             DisplayMoveRange(new Color(1f, 1f, 1f, 1f));
             // Clears the legalMoves array
             System.Array.Clear(legalMoves, 0, legalMoves.Length);
@@ -87,10 +89,10 @@ public class MoveManager : MonoBehaviour {
             return;
 
         // Subtract the tile-weight from the remaing amount of steps
-        int movesLeft = moveRange - mapManager.mapTiles[xPos, yPos].weight; 
+        int movesLeft = moveRange - mapManager.mapTiles[xPos, yPos].weight;
 
-        // If the remaining movement allows the unit to move onto the tile
-        if (movesLeft >= 0)
+        // If the remaining movement allows the unit to move onto the tile and if an opposing unit is not blocking the way
+        if (movesLeft >= 0 && !CheckForUnitCollision(xPos, yPos))
         {
             // If the tile isn't occupied by another unit
             if (!mapManager.mapTiles[xPos, yPos].tile.GetComponent<TerrainScript>().occupied)
@@ -104,8 +106,38 @@ public class MoveManager : MonoBehaviour {
             CheckMoveRange(movesLeft, xPos, yPos + 1);
         }
 
-        // If the remaining movement does not allow for the unit to move further: return
+        // If the unit can not move further: return
         else return;
+    }
+
+    // Checks if a unit of the other team is present at the given position
+    private bool CheckForUnitCollision(int xPos, int yPos)
+    {
+        // Adjust xPos and yPos just a bit because the size of the units' colliders are set to like 0.99 or something
+        // Why are they set to 0.99 or something? I don't remember, but it is necessary. I think.
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(xPos+0.2f, yPos+0.2f), Vector2.zero);
+
+        // If the raycast hit something
+        if (hit)
+        {
+            // If there is a unit of the other team at the given position: return true
+            if (selectedUnit.CompareTag("Player"))
+            {
+                if (hit.transform.CompareTag("Enemy"))
+                    return true;
+            }
+
+            else if (selectedUnit.CompareTag("Enemy"))
+            {
+                if (hit.transform.CompareTag("Player"))
+                    return true;
+            }
+
+            return false;
+        }
+
+        // If the raycast didn't hit anything, or if there wasn't an opposing unit blocking the way: return false
+        else return false;
     }
 
     // Sets the color of all the tiles the unit can move to to a different color
@@ -129,11 +161,12 @@ public class MoveManager : MonoBehaviour {
         // If the position isn't outside the boundaries of the map
         if (!OutsideMapRange.Invoke(mousePosX) && !OutsideMapRange.Invoke(mousePosY))
         {
-            // If [the tile at the position of the mouse at the time of clicking] is [a legal move]
+            // If [the tile at the position of the mouse at the time of clicking is [a legal move]
             if (legalMoves[mousePosX, mousePosY].legal)
             {
                 // Move the selected unit to said tile
                 selectedUnit.GetComponent<Rigidbody2D>().MovePosition(new Vector2(mousePosX, mousePosY));
+                selectedUnit.GetComponent<UnitScript>().canTakeAction = false;
             }
         }
 

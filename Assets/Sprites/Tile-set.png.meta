@@ -1,13 +1,13 @@
 fileFormatVersion: 2
 guid: f13cb27db6361914c923bf69927c5c88
-timeCreated: 1514478661
+timeCreated: 1515514210
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: grass_0
-    21300002: grass_1
-    21300004: grass_2
-    21300006: grass_3
+    21300000: grass_dark_1
+    21300002: grass_light_1
+    21300004: grass_dark_2
+    21300006: grass_light_2
     21300008: mountain_0
     21300010: mountain_1
     21300012: mountain_2
@@ -50,6 +50,8 @@ TextureImporter:
     21300086: road_7
     21300088: road_8
     21300090: road_9
+    21300092: knight_enemy
+    21300094: cavalry_enemy
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -124,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: grass_0
+      name: grass_dark_1
       rect:
         serializedVersion: 2
         x: 0
@@ -138,7 +140,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grass_1
+      name: grass_light_1
       rect:
         serializedVersion: 2
         x: 16
@@ -152,7 +154,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grass_2
+      name: grass_dark_2
       rect:
         serializedVersion: 2
         x: 32
@@ -166,7 +168,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grass_3
+      name: grass_light_2
       rect:
         serializedVersion: 2
         x: 48
@@ -327,8 +329,8 @@ TextureImporter:
         y: 416
         width: 16
         height: 16
-      alignment: 6
-      pivot: {x: 0, y: 0}
+      alignment: 8
+      pivot: {x: 1, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -341,8 +343,8 @@ TextureImporter:
         y: 416
         width: 16
         height: 16
-      alignment: 6
-      pivot: {x: 0, y: 0}
+      alignment: 8
+      pivot: {x: 1, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -763,6 +765,34 @@ TextureImporter:
         height: 16
       alignment: 6
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: knight_enemy
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 416
+        width: 16
+        height: 16
+      alignment: 8
+      pivot: {x: 1, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: cavalry_enemy
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 416
+        width: 16
+        height: 16
+      alignment: 8
+      pivot: {x: 1, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61116837927673330}
   - component: {fileID: 114703368133362780}
   m_Layer: 0
-  m_Name: PlainTile0
+  m_Name: PlainsTile0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,6 +78,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 620d0d1766f228b45a6a9bafbfe78b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tooltipManager: {fileID: 0}
+  occupied: 0
+  weight: 0
 --- !u!212 &212399161826334088
 SpriteRenderer:
   m_ObjectHideFlags: 1
