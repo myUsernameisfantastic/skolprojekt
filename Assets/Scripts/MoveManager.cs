@@ -25,11 +25,14 @@ public class MoveManager : MonoBehaviour {
     // Checks to see if a given coordinate is outside the map boundaries
     private System.Predicate<int> OutsideMapRange = (x) => x <= -1 || x >= 5;
 
-    // Array of Coords. Is used to check if a tile can be reached legitimately by a unit
-    private Coords[,] legalMoves = new Coords[5, 5];
-
     // Bool that checks if a unit is in the process of moving
     private bool moveInMotion = false;
+
+    // Array of Coords. Is used to check if a tile can be reached legitimately by a unit
+    // Is public because it is used in EnemyBehavior
+    // The same goes for InitiateMove()
+    [HideInInspector]
+    public Coords[,] legalMoves = new Coords[5, 5];
 
     // Object reference to the unit the user clicks on
     [HideInInspector]
@@ -41,12 +44,12 @@ public class MoveManager : MonoBehaviour {
         // If a unit is in the process of moving and the user clicks
         if (moveInMotion && Input.GetMouseButtonDown(0))
         {
-            // Set moveInMotion to false because the process of moving either succeeded or failed
+            // Set moveInMotion to false because the process of moving will end after this
             moveInMotion = false;
             // Was manually set to false in InitiateMove()
             // Is manually set to true in case the unit doesn't move
             // (If the unit moves it will be set to false by the OnTriggerExit2D on the tile object)
-            mapManager.mapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].tile.GetComponent<TerrainScript>().occupied = true;  
+            mapManager.mapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].tile.GetComponent<TerrainScript>().occupied = true;
             // If the selected unit is a player and that player hasn't already moved: allow for an attempt to move
             if (selectedUnit.CompareTag("Player") && selectedUnit.GetComponent<UnitScript>().canTakeAction)
                 AttemptMove();
@@ -57,7 +60,9 @@ public class MoveManager : MonoBehaviour {
     }
 
     // Initiates the "process" of moving
-    public void InitiateMove()
+    // Is called in CursorScript when the user clicks on a unit
+    // and in EnemyBehavior when it is the enemy turn
+    public void InitiateMove(bool isThisCalledFromCursorScript)
     {
         // Get the move-variable and the position of the selected unit
         int moveRange = selectedUnit.GetComponent<UnitScript>().move;
@@ -72,17 +77,20 @@ public class MoveManager : MonoBehaviour {
         // add 1 to the unit's move-variable because I'm too lazy to implement a flawless algorithm 
         CheckMoveRange(moveRange+1, xPos, yPos);
 
-        // Call DisplayMoveRange()
-        DisplayMoveRange(new Color(0.44f, 0.6f, 1f, 1f));   // #6F99FFFF (I think)
+        if (isThisCalledFromCursorScript)
+            // If it isn't, then we don't want to display the move range or set moveInMotion to true
+        {
+            DisplayMoveRange(new Color(0.44f, 0.6f, 1f, 1f));
 
-        // Set moveInMotion to true to allow the if-statement in FixedUpdate() to be reached(?)
-        moveInMotion = true;
+            // Set moveInMotion to true so that the if-statement in Update can be reached
+            moveInMotion = true;
+        }        
     }
 
     // Implementaion (sort of?) of a flood-fill
     // Decides whether a tile on the map is legitimately reachable by the unit or not
     // Takes an int for how many steps the unit can take and two int:s for the x and y position of a tile
-    public void CheckMoveRange(int moveRange, int xPos, int yPos)
+    private void CheckMoveRange(int moveRange, int xPos, int yPos)
     {
         // If the given position is outside of the map: return
         if (OutsideMapRange.Invoke(xPos) || OutsideMapRange.Invoke(yPos))
@@ -151,17 +159,17 @@ public class MoveManager : MonoBehaviour {
     }
 
     // Attempts to move the unit
-    public void AttemptMove()
+    private void AttemptMove()
     {
         Vector3 newMousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -2f));
 
         int mousePosX = (int)Mathf.Floor(newMousePos.x);
         int mousePosY = (int)Mathf.Floor(newMousePos.y);
 
-        // If the position isn't outside the boundaries of the map
+        // If the position of the mouse isn't outside the boundaries of the map
         if (!OutsideMapRange.Invoke(mousePosX) && !OutsideMapRange.Invoke(mousePosY))
         {
-            // If [the tile at the position of the mouse at the time of clicking is [a legal move]
+            // If [the tile at the position of the mouse at the time of clicking is a legal move
             if (legalMoves[mousePosX, mousePosY].legal)
             {
                 // Move the selected unit to said tile

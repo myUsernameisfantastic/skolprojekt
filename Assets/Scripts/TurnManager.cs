@@ -14,49 +14,37 @@ public class TurnManager : MonoBehaviour {
     {
         playerTurn = true;
 
-        Debug.Log("gm.playerUnits.Count = "+gm.playerUnits.Count);
+        RefreshAction(gm.playerUnits);
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        //TurnChange();
+        TurnChange();
 	}
 
     private void TurnChange()
     {
+        // If it is the player's turn
         if (playerTurn)
         {
-            foreach (GameObject unit in gm.playerUnits)
+            foreach (UnitScript unit in gm.playerUnits)
             {
+                // If there is a unit who can take an action, return false
                 if (unit.GetComponent<UnitScript>().canTakeAction)
                 {
                     return;
                 }
-
-                else
-                    playerTurn = false;
             }
-        }
 
-        else
-        {
-            foreach (GameObject unit in gm.enemyUnits)
-            {
-                if (unit.GetComponent<UnitScript>().canTakeAction)
-                {
-                    return;
-                }
-
-                else
-                    playerTurn = true;
-            }
+            playerTurn = false;
+            RefreshAction(gm.enemyUnits);
         }
     }
 
-    private void RefreshAction(List<GameObject> units)
+    public void RefreshAction(List<UnitScript> units)
     {
-        foreach (GameObject unit in units)
+        foreach (UnitScript unit in units)
         {
             unit.GetComponent<UnitScript>().canTakeAction = true;
         }

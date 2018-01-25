@@ -14,32 +14,25 @@ public class CursorScript : MonoBehaviour {
     [SerializeField]
     private MoveManager moveManager;
 
-    // Start
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
     }
     
-    // FixedUpdate
-    //                                                                          should be changed to update when turn have been implemented, i think
     void FixedUpdate()
     {
-        // Moves the cursor
         MoveCursor();
 
-        // If the user clicks
         if (Input.GetMouseButtonDown(0))
         {
-            // If the user clicked on a unit
             if (SelectUnit())
             {
-                // Call the InitiateMove-method in MoveManager
-                moveManager.InitiateMove();
+                moveManager.InitiateMove(true);
             }
         }            
     }
 
-    // Set the position of the cursor to the mouse position and snap to the grid
+    // Set the position of the cursor to the mouse position and snap it to the grid
     private void MoveCursor()
     {
         mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z);
@@ -62,7 +55,6 @@ public class CursorScript : MonoBehaviour {
             return true;
         }
 
-        // If the raycast didn't hit anything: return false
         else return false;
     }
 }

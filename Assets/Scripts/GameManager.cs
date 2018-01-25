@@ -13,9 +13,9 @@ public class GameManager : MonoBehaviour {
 
     // Lists of player units and enemy units
     
-    public List<GameObject> playerUnits;
+    public List<UnitScript> playerUnits;
     [HideInInspector]
-    public List<GameObject> enemyUnits;
+    public List<UnitScript> enemyUnits;
 
     // Use this for initialization
     void Start ()
@@ -42,10 +42,10 @@ public class GameManager : MonoBehaviour {
 
         // If the unit is a player unit: add it to the player list
         if (isPlayer)
-            playerUnits.Add(instance);
+            playerUnits.Add(instance.GetComponent<UnitScript>());
 
         // Else: add it to the enemy list
         else
-            enemyUnits.Add(instance);
+            enemyUnits.Add(instance.GetComponent<UnitScript>());
     }
 }

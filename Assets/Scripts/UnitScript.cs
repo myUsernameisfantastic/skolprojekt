@@ -9,4 +9,13 @@ public class UnitScript : MonoBehaviour {
 
     public bool canTakeAction;
 
+    void FixedUpdate()
+    {
+        if (!canTakeAction)
+            GetComponent<SpriteRenderer>().color = new Color(0.43f, 0.43f, 0.43f, 1f);
+
+        else
+            GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+    }
+
 }
