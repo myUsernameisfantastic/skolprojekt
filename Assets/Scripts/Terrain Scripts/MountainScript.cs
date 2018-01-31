@@ -7,10 +7,8 @@ public class MountainScript : TerrainScript {
 
     // The weight this type of tile holds
     // Is used in calculating movement ranges
-    public int weight;
+    [SerializeField]
+    private int weight = 4;
+    public int Weight { get { return weight; } }
 
-    void Awake ()
-    {
-        weight = 10;
-    }
 }

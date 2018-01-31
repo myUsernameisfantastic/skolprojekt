@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     // Arrays holding prefabs of units
+    [SerializeField]
     private GameObject[][] unitPrefabs = new GameObject[2][];
     [SerializeField]
     private GameObject[] playerPrefabs = new GameObject[1];
@@ -12,13 +13,13 @@ public class GameManager : MonoBehaviour {
     private GameObject[] enemyPrefabs = new GameObject[1];
 
     // Lists of player units and enemy units
-    
-    public List<UnitScript> playerUnits;
-    [HideInInspector]
-    public List<UnitScript> enemyUnits;
+    private List<UnitScript> playerUnits;
+    private List<UnitScript> enemyUnits;
+    public List<UnitScript> PlayerUnits { get { return playerUnits; } }
+    public List<UnitScript> EnemyUnits { get { return enemyUnits; } }
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         // first index 0 = player units
         // first index 1 = enemy units
@@ -31,7 +32,6 @@ public class GameManager : MonoBehaviour {
         SpawnUnit(unitPrefabs[0][0], new Vector3(2f, 1f, -1f), true);
         SpawnUnit(unitPrefabs[0][0], new Vector3(1f, 2f, -1f), true);
         SpawnUnit(unitPrefabs[1][0], new Vector3(3f, 3f, -1f), false);     // Creates an enemy knight
-        SpawnUnit(unitPrefabs[1][0], new Vector3(4f, 2f, -1f), false);     // Creates another enemy knight
     }
 
     // Instantiates a unit and adds it to the appropriate List
@@ -40,11 +40,10 @@ public class GameManager : MonoBehaviour {
     {
         GameObject instance = Instantiate(prefab, position, Quaternion.identity, transform) as GameObject;
 
-        // If the unit is a player unit: add it to the player list
+        // Adds the unit to a list of units
         if (isPlayer)
-            playerUnits.Add(instance.GetComponent<UnitScript>());
+            playerUnits.Add(instance.gameObject.GetComponent<UnitScript>());
 
-        // Else: add it to the enemy list
         else
             enemyUnits.Add(instance.GetComponent<UnitScript>());
     }

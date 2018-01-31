@@ -6,7 +6,8 @@ using UnityEngine;
 public class TerrainScript : MonoBehaviour {
 
     // Bool used to check if the tile is occupied by a unit
-    public bool occupied;
+    private bool occupied;
+    public bool Occupied { get { return occupied; } }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -25,4 +26,5 @@ public class TerrainScript : MonoBehaviour {
             occupied = false;
         }
     }
+
 }

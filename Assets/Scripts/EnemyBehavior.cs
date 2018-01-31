@@ -13,28 +13,29 @@ public class EnemyBehavior : MonoBehaviour {
 	
 	void Update ()
     {
-		if (!turn.playerTurn)
+        // If it is the enemies' turn
+		if (!turn.PlayerTurn)
         {
-            foreach (UnitScript unit in gm.enemyUnits)
+            foreach (UnitScript unit in gm.EnemyUnits)
             {
-                move.selectedUnit = unit.gameObject;
+                move.SelectedUnit = unit.gameObject;
 
                 move.InitiateMove(false);
 
-                while (unit.canTakeAction)
+                while (unit.CanTakeAction)
                 {
                     int xRng = (int)Mathf.Floor(Random.Range(0f, 4f));
                     int yRng = (int)Mathf.Floor(Random.Range(0f, 4f));
 
-                    if (move.legalMoves[xRng, yRng].legal)
+                    if (move.LegalMoves[xRng, yRng].Legal)
                     {
                         // Moves the unit to a random legal tile
                         unit.GetComponent<Rigidbody2D>().MovePosition(new Vector2(xRng, yRng));
-                        unit.canTakeAction = false;
+                        unit.CanTakeAction = false;
                     }
                 }
 
-                System.Array.Clear(move.legalMoves, 0, move.legalMoves.Length);
+                System.Array.Clear(move.LegalMoves, 0, move.LegalMoves.Length);
             }
 
             // Was manually set to false in InitiateMove()
@@ -42,8 +43,8 @@ public class EnemyBehavior : MonoBehaviour {
             // (If the unit moves it will be set to false by the OnTriggerExit2D on the tile object)
             //mapManager.mapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].tile.GetComponent<TerrainScript>().occupied = true;
 
-            turn.playerTurn = true;
-            turn.RefreshAction(gm.playerUnits);
+            turn.PlayerTurn = true;
+            turn.RefreshAction(gm.PlayerUnits);
         }
 	}
 

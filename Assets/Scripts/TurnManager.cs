@@ -4,23 +4,24 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour {
 
-    public bool playerTurn;
+    private bool playerTurn;
+    public bool PlayerTurn { get { return playerTurn; } set { playerTurn = value; } }
 
     [SerializeField]
     private GameManager gm; 
 
 	// Use this for initialization
-	void Start ()
+	void Start()
     {
         playerTurn = true;
 
-        RefreshAction(gm.playerUnits);
+        RefreshAction(gm.PlayerUnits);
     }
 	
 	// Update is called once per frame
-	void Update ()
+	void Update()
     {
-        TurnChange();
+       // TurnChange();
 	}
 
     private void TurnChange()
@@ -28,17 +29,17 @@ public class TurnManager : MonoBehaviour {
         // If it is the player's turn
         if (playerTurn)
         {
-            foreach (UnitScript unit in gm.playerUnits)
+            foreach (UnitScript unit in gm.PlayerUnits)
             {
                 // If there is a unit who can take an action, return false
-                if (unit.GetComponent<UnitScript>().canTakeAction)
+                if (unit.GetComponent<UnitScript>().CanTakeAction)
                 {
                     return;
                 }
             }
 
             playerTurn = false;
-            RefreshAction(gm.enemyUnits);
+            RefreshAction(gm.EnemyUnits);
         }
     }
 
@@ -46,7 +47,7 @@ public class TurnManager : MonoBehaviour {
     {
         foreach (UnitScript unit in units)
         {
-            unit.GetComponent<UnitScript>().canTakeAction = true;
+            unit.GetComponent<UnitScript>().CanTakeAction = true;
         }
     }
 

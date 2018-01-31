@@ -7,8 +7,11 @@ public class MoveManager : MonoBehaviour {
     // struct used to hold coordinates and a bool for whether the tile at said coordinates is reachable by the selected unit or not
     public struct Coords
     {
-        public int x, y;
-        public bool legal;
+        private int x, y;
+        public int X { get { return x; } }
+        public int Y { get { return y; } }
+        private bool legal;
+        public bool Legal { get { return legal; } }
 
         public Coords(int x, int y, bool legal)
         {
@@ -20,26 +23,24 @@ public class MoveManager : MonoBehaviour {
 
     // Object reference(?) to the MapManager script
     [SerializeField]
-    private MapManager mapManager;
+    private static MapManager map;
 
     // Checks to see if a given coordinate is outside the map boundaries
-    private System.Predicate<int> OutsideMapRange = (x) => x <= -1 || x >= 5;
+    private System.Predicate<int> OutsideMapRange = (x) => x <= -1 || x >= map.LimitX || x >= map.LimitY;
 
     // Bool that checks if a unit is in the process of moving
     private bool moveInMotion = false;
 
     // Array of Coords. Is used to check if a tile can be reached legitimately by a unit
-    // Is public because it is used in EnemyBehavior
-    // The same goes for InitiateMove()
-    [HideInInspector]
-    public Coords[,] legalMoves = new Coords[5, 5];
+    private Coords[,] legalMoves = new Coords[5, 5];
+    public Coords[,] LegalMoves { get { return legalMoves; } }
 
     // Object reference to the unit the user clicks on
-    [HideInInspector]
-    public GameObject selectedUnit;
+    private GameObject selectedUnit;
+    public GameObject SelectedUnit { get { return selectedUnit; } set { selectedUnit = value; } }
 
     // FixedUpdate
-    void FixedUpdate ()
+    void FixedUpdate()
     {
         // If a unit is in the process of moving and the user clicks
         if (moveInMotion && Input.GetMouseButtonDown(0))
@@ -49,9 +50,9 @@ public class MoveManager : MonoBehaviour {
             // Was manually set to false in InitiateMove()
             // Is manually set to true in case the unit doesn't move
             // (If the unit moves it will be set to false by the OnTriggerExit2D on the tile object)
-            mapManager.mapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].tile.GetComponent<TerrainScript>().occupied = true;
+            // map.MapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].Tile.GetComponent<TerrainScript>().Occupied = true;****************************
             // If the selected unit is a player and that player hasn't already moved: allow for an attempt to move
-            if (selectedUnit.CompareTag("Player") && selectedUnit.GetComponent<UnitScript>().canTakeAction)
+            if (selectedUnit.CompareTag("Player") && selectedUnit.GetComponent<UnitScript>().CanTakeAction)
                 AttemptMove();
             DisplayMoveRange(new Color(1f, 1f, 1f, 1f));
             // Clears the legalMoves array
@@ -65,13 +66,13 @@ public class MoveManager : MonoBehaviour {
     public void InitiateMove(bool isThisCalledFromCursorScript)
     {
         // Get the move-variable and the position of the selected unit
-        int moveRange = selectedUnit.GetComponent<UnitScript>().move;
+        int moveRange = selectedUnit.GetComponent<UnitScript>().Move;
         int xPos = (int)selectedUnit.transform.position.x;
         int yPos = (int)selectedUnit.transform.position.y;
 
         // Set the occupied-variable of the tile the unit is standing on to false
         // (So that the unit can "move" to the tile it is already on)
-        mapManager.mapTiles[xPos, yPos].tile.GetComponent<TerrainScript>().occupied = false;
+        // map.MapTiles[xPos, yPos].Tile.GetComponent<TerrainScript>().Occupied = false;***************************************************************************************************
 
         // Call CheckMoveRange() and
         // add 1 to the unit's move-variable because I'm too lazy to implement a flawless algorithm 
@@ -97,13 +98,13 @@ public class MoveManager : MonoBehaviour {
             return;
 
         // Subtract the tile-weight from the remaing amount of steps
-        int movesLeft = moveRange - mapManager.mapTiles[xPos, yPos].weight;
+        int movesLeft = moveRange - map.MapTiles[xPos, yPos].Weight;
 
         // If the remaining movement allows the unit to move onto the tile and if an opposing unit is not blocking the way
         if (movesLeft >= 0 && !CheckForUnitCollision(xPos, yPos))
         {
             // If the tile isn't occupied by another unit
-            if (!mapManager.mapTiles[xPos, yPos].tile.GetComponent<TerrainScript>().occupied)
+            if (!map.MapTiles[xPos, yPos].Tile.GetComponent<TerrainScript>().Occupied)
                 // Add the position of this tile to the legalMoves array and set its legal-variable to true
                 legalMoves[xPos, yPos] = new Coords(xPos, yPos, true);
 
@@ -121,31 +122,12 @@ public class MoveManager : MonoBehaviour {
     // Checks if a unit of the other team is present at the given position
     private bool CheckForUnitCollision(int xPos, int yPos)
     {
-        // Adjust xPos and yPos just a bit because the size of the units' colliders are set to like 0.99 or something
-        // Why are they set to 0.99 or something? I don't remember, but it is necessary. I think.
+        // Adjust xPos and yPos just a bit because the scale of the units' colliders are set to like 0.99
+        // They are scaled that way because otherwise some collision issue would arise
         RaycastHit2D hit = Physics2D.Raycast(new Vector2(xPos+0.2f, yPos+0.2f), Vector2.zero);
 
-        // If the raycast hit something
-        if (hit)
-        {
-            // If there is a unit of the other team at the given position: return true
-            if (selectedUnit.CompareTag("Player"))
-            {
-                if (hit.transform.CompareTag("Enemy"))
-                    return true;
-            }
-
-            else if (selectedUnit.CompareTag("Enemy"))
-            {
-                if (hit.transform.CompareTag("Player"))
-                    return true;
-            }
-
-            return false;
-        }
-
-        // If the raycast didn't hit anything, or if there wasn't an opposing unit blocking the way: return false
-        else return false;
+        // If there is an oppsing unit blocking the way, return true
+        return hit ? selectedUnit.tag != hit.transform.tag : false;
     }
 
     // Sets the color of all the tiles the unit can move to to a different color
@@ -153,8 +135,8 @@ public class MoveManager : MonoBehaviour {
     {
         foreach (Coords legalMove in legalMoves)
         {
-            if (legalMove.legal)
-                mapManager.mapTiles[legalMove.x, legalMove.y].tile.GetComponent<SpriteRenderer>().color = color;
+            if (legalMove.Legal)
+                map.MapTiles[legalMove.X, legalMove.Y].Tile.GetComponent<SpriteRenderer>().color = color;
         }
     }
 
@@ -163,18 +145,18 @@ public class MoveManager : MonoBehaviour {
     {
         Vector3 newMousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -2f));
 
-        int mousePosX = (int)Mathf.Floor(newMousePos.x);
-        int mousePosY = (int)Mathf.Floor(newMousePos.y);
+        int mousePosX = (int) newMousePos.x;
+        int mousePosY = (int) newMousePos.y;
 
         // If the position of the mouse isn't outside the boundaries of the map
         if (!OutsideMapRange.Invoke(mousePosX) && !OutsideMapRange.Invoke(mousePosY))
         {
             // If [the tile at the position of the mouse at the time of clicking is a legal move
-            if (legalMoves[mousePosX, mousePosY].legal)
+            if (legalMoves[mousePosX, mousePosY].Legal)
             {
                 // Move the selected unit to said tile
                 selectedUnit.GetComponent<Rigidbody2D>().MovePosition(new Vector2(mousePosX, mousePosY));
-                selectedUnit.GetComponent<UnitScript>().canTakeAction = false;
+                selectedUnit.GetComponent<UnitScript>().CanTakeAction = false;
             }
         }
 

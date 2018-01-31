@@ -5,12 +5,8 @@ using UnityEngine;
 
 public class CursorScript : MonoBehaviour {
 
-    // Variables
-    private Vector3 mousePos;
     private Vector3 newMousePos;
-    // Object reference to the Rigidbody2D of this cursor
     private Rigidbody2D rb2d;
-    // Object reference to the MoveManager script
     [SerializeField]
     private MoveManager moveManager;
 
@@ -35,11 +31,11 @@ public class CursorScript : MonoBehaviour {
     // Set the position of the cursor to the mouse position and snap it to the grid
     private void MoveCursor()
     {
-        mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z);
+        Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z);
         // Converts mouse position from pixel units to world units
         newMousePos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, -2f));
         // Moves the cursor to the mouse position coordinates rounded down
-        rb2d.MovePosition(new Vector2(Mathf.Floor(newMousePos.x), Mathf.Floor(newMousePos.y)));
+        rb2d.MovePosition(new Vector2((int)newMousePos.x, (int)newMousePos.y));
     }
 
     // Does a raycast to see if the user clicked on a unit
@@ -50,7 +46,7 @@ public class CursorScript : MonoBehaviour {
         if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Enemy"))
         {
             // Set the selectedUnit object in MoveManager to the unit hit by the raycast
-            moveManager.selectedUnit = hit.transform.gameObject;
+            moveManager.SelectedUnit = hit.transform.gameObject;
 
             return true;
         }
