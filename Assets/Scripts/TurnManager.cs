@@ -15,7 +15,7 @@ public class TurnManager : MonoBehaviour {
     {
         playerTurn = true;
 
-        RefreshAction(gm.PlayerUnits);
+        RefreshAction(true);
     }
 	
 	// Update is called once per frame
@@ -39,12 +39,14 @@ public class TurnManager : MonoBehaviour {
             }
 
             playerTurn = false;
-            RefreshAction(gm.EnemyUnits);
+            RefreshAction(false);
         }
     }
 
-    public void RefreshAction(List<UnitScript> units)
+    public void RefreshAction(bool isPlayer)
     {
+        List<UnitScript> units = isPlayer ? gm.PlayerUnits : gm.EnemyUnits;
+
         foreach (UnitScript unit in units)
         {
             unit.GetComponent<UnitScript>().CanTakeAction = true;

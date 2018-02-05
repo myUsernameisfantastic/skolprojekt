@@ -47,11 +47,7 @@ public class MapManager : MonoBehaviour {
         }
     }
 
-    // Object reference to [the map]
-    // (is parent of [the tiles])
-    private Transform map;
-
-    // How big would you like the map to be?
+    // How big the map is
     private int limitX = 5;
     private int limitY = 5;
     public int LimitX { get { return limitX; } }
@@ -70,8 +66,6 @@ public class MapManager : MonoBehaviour {
     // Awake
     void Awake()
     {
-        map = GetComponent<Transform>();
-
         CreateMap();
     }
 
@@ -99,8 +93,8 @@ public class MapManager : MonoBehaviour {
         if (mapTiles[(int)position.x, (int)position.y].Tile != null)
             Destroy(mapTiles[(int)position.x, (int)position.y].Tile);
 
-        // Makes the instantiated tile a child of [the map]
-        GameObject instance = Instantiate(prefab, position, Quaternion.identity, map) as GameObject;
+        // Makes the instantiated tile a child of the map
+        GameObject instance = Instantiate(prefab, position, Quaternion.identity, this.transform) as GameObject;
 
         // Adds the GameObject to the mapTiles-array, with the index corresponding to the tile's position in world space
         mapTiles[(int)position.x, (int)position.y] = new TilesOfTheMap(instance);

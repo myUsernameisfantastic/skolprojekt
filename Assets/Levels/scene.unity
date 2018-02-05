@@ -1285,8 +1285,6 @@ MonoBehaviour:
   - {fileID: 1090682376199444, guid: 32978c05638f11b4a978e4ca14c9f6f5, type: 2}
   enemyPrefabs:
   - {fileID: 1349231936135048, guid: a7655c20d7261b24b879bd52ca90fd47, type: 2}
-  playerUnits: []
-  enemyUnits: []
 --- !u!4 &722876111
 Transform:
   m_ObjectHideFlags: 0
@@ -1692,8 +1690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c10e94a301c2224faa3f8cddbf6990e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapManager: {fileID: 1209995766}
-  selectedUnit: {fileID: 0}
+  map: {fileID: 1209995766}
 --- !u!4 &923094429
 Transform:
   m_ObjectHideFlags: 0
@@ -2072,7 +2069,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 831d4ed6c1f09954b83d587da5fd580c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTurn: 0
   gm: {fileID: 722876110}
 --- !u!1 &1160784196
 GameObject:

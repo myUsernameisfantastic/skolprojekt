@@ -16,7 +16,9 @@ public class EnemyBehavior : MonoBehaviour {
         // If it is the enemies' turn
 		if (!turn.PlayerTurn)
         {
-            foreach (UnitScript unit in gm.EnemyUnits)
+            List<UnitScript> units = gm.EnemyUnits;
+
+            foreach (UnitScript unit in units)
             {
                 move.SelectedUnit = unit.gameObject;
 
@@ -44,7 +46,7 @@ public class EnemyBehavior : MonoBehaviour {
             //mapManager.mapTiles[(int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.y].tile.GetComponent<TerrainScript>().occupied = true;
 
             turn.PlayerTurn = true;
-            turn.RefreshAction(gm.PlayerUnits);
+            turn.RefreshAction(true);
         }
 	}
 

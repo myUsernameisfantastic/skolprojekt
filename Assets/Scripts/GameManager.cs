@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        playerUnits = new List<UnitScript>();
+        enemyUnits = new List<UnitScript>();
+
         // first index 0 = player units
         // first index 1 = enemy units
         // second index 0 = knight prefab
@@ -39,10 +42,11 @@ public class GameManager : MonoBehaviour {
     private void SpawnUnit(GameObject prefab, Vector3 position, bool isPlayer)
     {
         GameObject instance = Instantiate(prefab, position, Quaternion.identity, transform) as GameObject;
+        UnitScript unit = instance.GetComponent<UnitScript>();
 
         // Adds the unit to a list of units
         if (isPlayer)
-            playerUnits.Add(instance.gameObject.GetComponent<UnitScript>());
+            playerUnits.Add(unit);
 
         else
             enemyUnits.Add(instance.GetComponent<UnitScript>());

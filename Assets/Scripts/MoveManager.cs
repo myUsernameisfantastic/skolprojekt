@@ -23,10 +23,11 @@ public class MoveManager : MonoBehaviour {
 
     // Object reference(?) to the MapManager script
     [SerializeField]
-    private static MapManager map;
+    private MapManager map;
 
-    // Checks to see if a given coordinate is outside the map boundaries
-    private System.Predicate<int> OutsideMapRange = (x) => x <= -1 || x >= map.LimitX || x >= map.LimitY;
+    void Awake()
+    {
+    }
 
     // Bool that checks if a unit is in the process of moving
     private bool moveInMotion = false;
@@ -74,8 +75,6 @@ public class MoveManager : MonoBehaviour {
         // (So that the unit can "move" to the tile it is already on)
         // map.MapTiles[xPos, yPos].Tile.GetComponent<TerrainScript>().Occupied = false;***************************************************************************************************
 
-        // Call CheckMoveRange() and
-        // add 1 to the unit's move-variable because I'm too lazy to implement a flawless algorithm 
         CheckMoveRange(moveRange+1, xPos, yPos);
 
         if (isThisCalledFromCursorScript)
@@ -88,13 +87,18 @@ public class MoveManager : MonoBehaviour {
         }        
     }
 
-    // Implementaion (sort of?) of a flood-fill
+    // Checks if the given coordinates are outside of the map
+    public bool OutsideMapRange(int x, int y)
+    {
+        return (x < 0 || y < 0 || x > map.LimitX || y > map.LimitY);
+    }
+
     // Decides whether a tile on the map is legitimately reachable by the unit or not
     // Takes an int for how many steps the unit can take and two int:s for the x and y position of a tile
     private void CheckMoveRange(int moveRange, int xPos, int yPos)
     {
         // If the given position is outside of the map: return
-        if (OutsideMapRange.Invoke(xPos) || OutsideMapRange.Invoke(yPos))
+        if (OutsideMapRange(xPos, yPos))
             return;
 
         // Subtract the tile-weight from the remaing amount of steps
@@ -108,7 +112,7 @@ public class MoveManager : MonoBehaviour {
                 // Add the position of this tile to the legalMoves array and set its legal-variable to true
                 legalMoves[xPos, yPos] = new Coords(xPos, yPos, true);
 
-            // This function is recursive
+            // This function is recursive :)
             CheckMoveRange(movesLeft, xPos + 1, yPos);
             CheckMoveRange(movesLeft, xPos - 1, yPos);
             CheckMoveRange(movesLeft, xPos, yPos - 1);
@@ -126,7 +130,7 @@ public class MoveManager : MonoBehaviour {
         // They are scaled that way because otherwise some collision issue would arise
         RaycastHit2D hit = Physics2D.Raycast(new Vector2(xPos+0.2f, yPos+0.2f), Vector2.zero);
 
-        // If there is an oppsing unit blocking the way, return true
+        // If there is an opposing unit blocking the way, return true
         return hit ? selectedUnit.tag != hit.transform.tag : false;
     }
 
@@ -149,7 +153,7 @@ public class MoveManager : MonoBehaviour {
         int mousePosY = (int) newMousePos.y;
 
         // If the position of the mouse isn't outside the boundaries of the map
-        if (!OutsideMapRange.Invoke(mousePosX) && !OutsideMapRange.Invoke(mousePosY))
+        if (!OutsideMapRange(mousePosX, mousePosY))
         {
             // If [the tile at the position of the mouse at the time of clicking is a legal move
             if (legalMoves[mousePosX, mousePosY].Legal)

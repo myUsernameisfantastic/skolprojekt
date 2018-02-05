@@ -43,15 +43,8 @@ public class CursorScript : MonoBehaviour {
     {
         RaycastHit2D hit = Physics2D.Raycast(newMousePos, Vector2.zero);
 
-        if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Enemy"))
-        {
-            // Set the selectedUnit object in MoveManager to the unit hit by the raycast
-            moveManager.SelectedUnit = hit.transform.gameObject;
-
-            return true;
-        }
-
-        else return false;
+        // If raycast hit a unit, set selectedUnit in moveManager to the unit that was hit and return true. Else return false.
+        return (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Enemy")) ? moveManager.SelectedUnit = hit.transform.gameObject : false;
     }
 }
 
